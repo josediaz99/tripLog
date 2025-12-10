@@ -1,0 +1,90 @@
+﻿@using Microsoft.AspNetCore.Mvc.Rendering
+@functions {
+    // Returns "active" if this is the current controller/action
+    string IsActive(string controller, string action)
+    {
+        var routeData = ViewContext.RouteData.Values;
+        var currentController = routeData["controller"]?.ToString();
+        var currentAction = routeData["action"]?.ToString();
+
+        return string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(action, currentAction, StringComparison.OrdinalIgnoreCase)
+            ? "active"
+            : "";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Trip Log App</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/tripLog.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <!-- Nav bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Trip Log</a>
+
+                <button class="navbar-toggler" type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("Home", "Index")"
+                               asp-controller="Home" asp-action="Index">
+                                Home
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("Home", "ManageDestination")"
+                               asp-controller="Home" asp-action="ManageDestination">
+                                Manage Destination
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("Home", "ManageAccommodation")"
+                               asp-controller="Home" asp-action="ManageAccommodation">
+                                Manage Accommodation
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link @IsActive("Home", "ManageActivity")"
+                               asp-controller="Home" asp-action="ManageActivity">
+                                Manage Activity
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- banner -->
+        <div class="bg-primary text-white text-center py-3 mb-4">
+            <h1 class="display-6 mb-0">Trip Log App</h1>
+        </div>
+    </header>
+    <!-- main content-->
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
