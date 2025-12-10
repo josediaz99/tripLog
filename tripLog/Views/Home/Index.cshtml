@@ -1,9 +1,107 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<tripLog.Models.Trip>
+
+@{
+    // TODO: Set the add controller to the page which will take user input 
+    ViewData["Title"] = "Trips";
     Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1 class="mb-4">@ViewData["Title"]</h1>
+
+<a asp-controller="Home"
+   asp-action="AddTrip"
+   class="btn btn-primary mb-4">
+    Add New Trip
+</a>
+
+@if (Model != null && Model.Any())
+{
+    <div class="row">
+        @foreach (var trip in Model)
+        {
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <!-- Destination name -->
+                        <h5 class="card-title">
+                            @trip.Destination?.Name
+                        </h5>
+
+                        <!-- Trip dates -->
+                        <p class="card-text mb-2">
+                            <strong>Dates:</strong>
+                            @trip.StartDate.ToShortDateString()
+                            –
+                            @trip.EndDate.ToShortDateString()
+                        </p>
+
+                        <!-- Accommodation (only if there is data) -->
+                        @if (trip.Accommodation != null &&
+                             (!string.IsNullOrWhiteSpace(trip.Accommodation.Email) ||
+                              !string.IsNullOrWhiteSpace(trip.Accommodation.Phone)))
+                        {
+                            <div class="mb-3">
+                                <strong>Accommodation</strong>
+                                <ul class="list-unstyled mb-0">
+                                    @if (!string.IsNullOrWhiteSpace(trip.Accommodation.Email))
+                                    {
+                                        <li>
+                                            <span class="fw-semibold">Email:</span>
+                                            @trip.Accommodation.Email
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(trip.Accommodation.Phone))
+                                    {
+                                        <li>
+                                            <span class="fw-semibold">Phone:</span>
+                                            @trip.Accommodation.Phone
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+
+                        <!-- Activities (if any) -->
+                        @if (trip.Activities != null && trip.Activities.Any())
+                        {
+                            <div class="mt-auto">
+                                <strong>Activities</strong>
+                                <ul class="list-group list-group-flush mt-2">
+                                    @foreach (var activity in trip.Activities)
+                                    {
+                                        <li class="list-group-item px-0">
+                                            @activity.Name
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <p class="text-muted mt-auto mb-0">
+                                No activities listed for this trip.
+                            </p>
+                        }
+                    <div class="card-footer bg-transparent text-end">
+                        <form asp-controller="Home"
+                              asp-action="Delete"
+                              asp-route-id="@trip.TripId"
+                              method="post">
+
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger"
+                                    onclick="return confirm('Delete this trip?');">
+                                Delete
+                            </button>
+                        </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>No trips found.</p>
+}
