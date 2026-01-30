@@ -18,7 +18,7 @@ Trip Log is a web application built with the **.NET framework** that helps users
 ---
 
 ## Tech Stack
-
+- **IDE:** Visual Studio
 - **Framework:** ASP.NET Core (.NET 8)
 - **ORM:** Entity Framework Core 8
 - **Database:** SQL Server
